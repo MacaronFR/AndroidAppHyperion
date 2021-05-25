@@ -6,6 +6,7 @@ import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
+import org.json.JSONException
 import org.json.JSONObject
 
 class API {
@@ -20,21 +21,24 @@ class API {
         val res = runBlocking {
             request("/token/$clientId/$clientSecret/$mail/$password")
         }
-        if((res.get("status") as JSONObject).get("code") == 200){
+        return if((res.get("status") as JSONObject).get("code") == 200){
             token = (res.get("content") as JSONObject).get("token").toString()
-            return true
-        }else{
-            return false
-        }
+            true
+        }else
+            false
     }
 
     suspend fun request(uri: String):JSONObject{
         val url = "$endpoint$uri"
-        try {
+        return try {
             val response: HttpResponse = httpClient.get(url)
-            return JSONObject(response.readText())
+            JSONObject(response.readText())
         }catch (e: ClientRequestException){
-            return JSONObject(e.response.readText())
+            try {
+                JSONObject(e.response.readText())
+            }catch (e: JSONException){
+                JSONObject("{\"status\":{\"code\": \"500\", \"message\": \"Internal Server Error\"}}")
+            }
         }
     }
 }
