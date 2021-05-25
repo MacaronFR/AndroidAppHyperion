@@ -5,22 +5,21 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.runBlocking
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.Serializable
 
-class API {
+class API: Serializable {
     private val endpoint = "https://api.hyperion.dev.macaron-dev.fr"
     var token: String = ""
         private set
     private val clientId = "1234"
     private val clientSecret = "9876"
-    private val httpClient = HttpClient(CIO)
+    @Transient
+    private val httpClient = HttpClient()
 
-    fun connect(mail: String, password: String): Boolean{
-        val res = runBlocking {
-            request("/token/$clientId/$clientSecret/$mail/$password")
-        }
+    suspend fun connect(mail: String, password: String): Boolean{
+        val res = request("/token/$clientId/$clientSecret/$mail/$password")
         return if((res.get("status") as JSONObject).get("code") == 200){
             token = (res.get("content") as JSONObject).get("token").toString()
             true
@@ -29,6 +28,7 @@ class API {
     }
 
     suspend fun request(uri: String):JSONObject{
+        println(uri)
         val url = "$endpoint$uri"
         return try {
             val response: HttpResponse = httpClient.get(url)
