@@ -16,7 +16,7 @@ class API: Serializable {
     private val clientId = "1234"
     private val clientSecret = "9876"
     @Transient
-    private val httpClient = HttpClient()
+    private val httpClient = HttpClient(CIO)
 
     suspend fun connect(mail: String, password: String): Boolean{
         val res = request("/token/$clientId/$clientSecret/$mail/$password")
