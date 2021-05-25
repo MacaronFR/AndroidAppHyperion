@@ -3,16 +3,39 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@color/back_ground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top">
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/imageView"
+                android:layout_marginBottom="@dimen/logo_padding"
+                app:srcCompat="@drawable/logo" android:layout_marginTop="@dimen/logo_padding"/>
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="Mail"
+                android:ems="10"
+                android:id="@+id/mail" android:layout_margin="@dimen/input_margin"/>
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint="Password"
+                android:ems="10"
+                android:id="@+id/password" android:layout_margin="@dimen/input_margin"/>
+        <Button
+                android:text="Log in"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/login"
+                android:layout_margin="@dimen/input_margin"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

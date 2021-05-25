@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="hyperion">
+        <item name="android:background">@color/back_ground</item>
+    </style>
+    <style name="hyperion.input">
+        <item name="android:background">@color/button</item>
+    </style>
+</resources>
