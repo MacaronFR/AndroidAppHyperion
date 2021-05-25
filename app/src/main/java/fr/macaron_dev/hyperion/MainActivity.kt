@@ -6,6 +6,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +25,14 @@ class MainActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val hash = hashSHA256(password.text.toString())
         val api = API()
-        if(api.connect(mail, hash)){
-            Toast.makeText(applicationContext, "OK", Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(applicationContext, "Mauvais Identifiant", Toast.LENGTH_SHORT).show()
+        CoroutineScope(Dispatchers.Default).launch {
+            if(api.connect(mail, hash)){
+                withContext(Dispatchers.Main){
+                    Toast.makeText(applicationContext, "OK", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Toast.makeText(applicationContext, "Mauvais Identifiant", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
