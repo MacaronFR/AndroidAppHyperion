@@ -1,5 +1,6 @@
 package fr.macaron_dev.hyperion
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,10 @@ class LoadingActivity: AppCompatActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             if (api.connect(mail, hash)) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "OK", Toast.LENGTH_SHORT).show()
+                    finish()
+                    val homeIntent = Intent(applicationContext, HomeActivity::class.java)
+                    homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(homeIntent)
                 }
             } else {
                 withContext(Dispatchers.Main) {
@@ -28,4 +32,7 @@ class LoadingActivity: AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        return
+    }
 }
