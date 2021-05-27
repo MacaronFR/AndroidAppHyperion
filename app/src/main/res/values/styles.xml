@@ -3,7 +3,7 @@
     <style name="hyperion">
         <item name="android:background">@color/back_ground</item>
     </style>
-    <style name="hyperion.input">
-        <item name="android:background">@color/button</item>
+    <style name="hyperion.input" parent="Theme.AppCompat">
+        <item name="android:backgroundTint">@color/yellow</item>
     </style>
 </resources>

@@ -9,7 +9,7 @@ fun hashSHA256(input: String): String{
     return  bytesToHex(digest.digest(input.encodeToByteArray()))
 }
 
-fun bytesToHex(hash: ByteArray): String {
+private fun bytesToHex(hash: ByteArray): String{
     val hexString = StringBuilder(2 * hash.size)
     for (i in hash.indices) {
         val hex = Integer.toHexString(0xff and hash[i].toInt())

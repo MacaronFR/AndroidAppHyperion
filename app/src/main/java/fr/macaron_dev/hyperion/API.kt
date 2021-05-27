@@ -11,8 +11,7 @@ import java.io.Serializable
 
 class API: Serializable {
     private val endpoint = "https://api.hyperion.dev.macaron-dev.fr"
-    var token: String = ""
-        private set
+    private lateinit var token: String
     private val clientId = "1234"
     private val clientSecret = "9876"
     @Transient
@@ -27,8 +26,7 @@ class API: Serializable {
             false
     }
 
-    suspend fun request(uri: String):JSONObject{
-        println(uri)
+    private suspend fun request(uri: String):JSONObject{
         val url = "$endpoint$uri"
         return try {
             val response: HttpResponse = httpClient.get(url)
@@ -39,6 +37,15 @@ class API: Serializable {
             }catch (e: JSONException){
                 JSONObject("{\"status\":{\"code\": \"500\", \"message\": \"Internal Server Error\"}}")
             }
+        }
+    }
+
+    suspend fun getProfile(): JSONObject{
+        val res = request("/me/$token")
+        return if ((res.get("status") as JSONObject).get("code") == 200){
+            res.get("content") as JSONObject
+        }else{
+            res
         }
     }
 }
