@@ -8,6 +8,7 @@ import io.ktor.client.statement.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.Serializable
+import java.nio.channels.UnresolvedAddressException
 
 class API: Serializable {
     private val endpoint = "https://api.hyperion.dev.macaron-dev.fr"
@@ -17,25 +18,33 @@ class API: Serializable {
     @Transient
     private val httpClient = HttpClient(CIO)
 
-    suspend fun connect(mail: String, password: String): Boolean{
+    suspend fun connect(mail: String, password: String): Int{
         val res = request("/token/$clientId/$clientSecret/$mail/$password")
-        return if((res.get("status") as JSONObject).get("code") == 200){
-            token = (res.get("content") as JSONObject).get("token").toString()
-            true
-        }else
-            false
+        return when((res.get("status") as JSONObject).getInt("code")){
+            0 -> 1
+            200 -> {
+                token = (res.get("content") as JSONObject).get("token").toString()
+                0
+            }
+            else -> 2
+        }
     }
 
     private suspend fun request(uri: String):JSONObject{
         val url = "$endpoint$uri"
         return try {
-            val response: HttpResponse = httpClient.get(url)
+            val response: HttpResponse
+            try {
+                response = httpClient.get(url)
+            }catch (e: UnresolvedAddressException){
+                return JSONObject("{\"status\":{\"code\": 0, \"message\": \"Connection to Server cannot be established\"}}")
+            }
             JSONObject(response.readText())
         }catch (e: ClientRequestException){
             try {
                 JSONObject(e.response.readText())
             }catch (e: JSONException){
-                JSONObject("{\"status\":{\"code\": \"500\", \"message\": \"Internal Server Error\"}}")
+                JSONObject("{\"status\":{\"code\": 500, \"message\": \"Internal Server Error\"}}")
             }
         }
     }

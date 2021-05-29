@@ -16,15 +16,18 @@ class LoadingActivity: AppCompatActivity() {
         val mail = intent.getStringExtra("mail") as String
         val hash = intent.getStringExtra("hash") as String
         CoroutineScope(Dispatchers.Default).launch {
-            if (api.connect(mail, hash)) {
-                withContext(Dispatchers.Main) {
+            when(api.connect(mail, hash)){
+                0 -> withContext(Dispatchers.Main) {
                     finish()
                     val homeIntent = Intent(applicationContext, HomeActivity::class.java)
                     homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(homeIntent)
                 }
-            } else {
-                withContext(Dispatchers.Main) {
+                1 -> withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "Connection to Server cannot be established", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                2 -> withContext(Dispatchers.Main) {
                     Toast.makeText(applicationContext, "Mauvais Identifiant", Toast.LENGTH_SHORT).show()
                     finish()
                 }

@@ -3,6 +3,7 @@ package fr.macaron_dev.hyperion
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -27,11 +28,12 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
         setContentView(R.layout.activity_home)
         setSupportActionBar(findViewById(R.id.homeToolBar))
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val drawer = findViewById<DrawerLayout>(R.id.drawerLayout)
         val navView = findViewById<NavigationView>(R.id.navView)
         val navController = findNavController(R.id.navViewFragmentManager)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.frag_home), drawer
+            setOf(R.id.nav_home, R.id.nav_about), drawer
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -40,6 +42,8 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
             val profile = api.getProfile()
             withContext(Dispatchers.Main){
                 gcCount.text = getString(R.string.gccount, profile.getInt("gc"))
+                findViewById<TextView>(R.id.name).text = getString(R.string.name, profile.getString("name"), profile.getString("fname"))
+                findViewById<TextView>(R.id.mail).text = getString(R.string.mail, profile.getString("mail"))
             }
         }
     }
