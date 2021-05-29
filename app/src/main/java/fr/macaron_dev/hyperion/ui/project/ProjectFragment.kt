@@ -1,4 +1,4 @@
-package fr.macaron_dev.hyperion.ui.about
+package fr.macaron_dev.hyperion.ui.project
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import fr.macaron_dev.hyperion.R
 
-class AboutFragment : Fragment() {
-
+class ProjectFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
+        return inflater.inflate(R.layout.fragment_project, container, false)
     }
 }

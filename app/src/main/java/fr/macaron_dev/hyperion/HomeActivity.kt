@@ -33,7 +33,7 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
         val navView = findViewById<NavigationView>(R.id.navView)
         val navController = findNavController(R.id.navViewFragmentManager)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_about), drawer
+            setOf(R.id.nav_home, R.id.nav_project, R.id.nav_about, R.id.nav_admin), drawer
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -44,6 +44,9 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
                 gcCount.text = getString(R.string.gccount, profile.getInt("gc"))
                 findViewById<TextView>(R.id.name).text = getString(R.string.name, profile.getString("name"), profile.getString("fname"))
                 findViewById<TextView>(R.id.mail).text = getString(R.string.mail, profile.getString("mail"))
+                if(profile.getInt("type") >= 3){
+                    navView.menu.removeGroup(R.id.group_nav_admin)
+                }
             }
         }
     }

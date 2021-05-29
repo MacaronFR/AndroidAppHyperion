@@ -2,7 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item android:title="Home" android:id="@+id/nav_home"/>
+        <item android:id="@+id/nav_project" android:title="Project"/>
         <item android:title="About" android:id="@+id/nav_about"/>
     </group>
-    <item android:title="NIK2"/>
+    <group android:id="@+id/group_nav_admin">
+        <item android:title="Administration" android:id="@+id/nav_admin"/>
+    </group>
 </menu>

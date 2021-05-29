@@ -6,11 +6,17 @@
     <fragment
             android:id="@+id/nav_home"
             android:name="fr.macaron_dev.hyperion.ui.home.HomeFragment"
-            android:label="Voila"
             tools:layout="@layout/fragment_home"/>
     <fragment
-        android:id="@+id/nav_about"
-        android:name="fr.macaron_dev.hyperion.ui.about.AboutFragment"
-        android:label="Voila"
-        tools:layout="@layout/fragment_about"/>
+            android:id="@+id/nav_about"
+            android:name="fr.macaron_dev.hyperion.ui.about.AboutFragment"
+            tools:layout="@layout/fragment_about"/>
+    <fragment
+            android:id="@+id/nav_project"
+            android:name="fr.macaron_dev.hyperion.ui.project.ProjectFragment"
+            tools:layout="@layout/fragment_project"/>
+    <fragment
+            android:id="@+id/nav_admin"
+            android:name="fr.macaron_dev.hyperion.ui.admin.AdminFragment"
+            tools:layout="@layout/fragment_admin"/>
 </navigation>
