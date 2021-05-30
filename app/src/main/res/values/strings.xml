@@ -6,4 +6,8 @@
     <string name="navHeaderImageDescription">Profile Picture</string>
     <string name="name">%1$s %2$s</string>
     <string name="mail">%1$s</string>
+    <string-array name="home_spinner">
+        <item>Nouveau</item>
+        <item>Populaire</item>
+    </string-array>
 </resources>

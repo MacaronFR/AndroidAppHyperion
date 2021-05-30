@@ -2,4 +2,6 @@
 <resources>
     <dimen name="logo_padding">75dp</dimen>
     <dimen name="input_margin">10dp</dimen>
+    <dimen name="toolbarHeight">56dp</dimen>
+    <dimen name="marginTopContent">70dp</dimen>
 </resources>
