@@ -47,6 +47,11 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
         val gcCount: ActionMenuItemView = findViewById(R.id.gcCount)
         CoroutineScope(Dispatchers.Default).launch {
             val profile = api.getProfile()
+            if(profile.has("status")){
+                withContext(Dispatchers.Main){
+                    Toast.makeText(applicationContext, "Network Error", Toast.LENGTH_LONG)
+                }
+            }
             withContext(Dispatchers.Main){
                 gcCount.text = getString(R.string.gccount, profile.getInt("gc"))
                 findViewById<TextView>(R.id.name).text = getString(R.string.name, profile.getString("name"), profile.getString("fname"))

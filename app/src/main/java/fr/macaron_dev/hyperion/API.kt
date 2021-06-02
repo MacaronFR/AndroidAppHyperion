@@ -5,6 +5,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.Serializable
@@ -55,6 +56,15 @@ class API: Serializable {
             res.get("content") as JSONObject
         }else{
             res
+        }
+    }
+
+    suspend fun getLatestProject(): JSONArray{
+        val res = request("/project/latest/0")
+        return if((res.get("status") as JSONObject).get("code") == 200){
+            res.get("content") as JSONArray
+        }else{
+            JSONArray("[500, \"Internal Server Error\"]")
         }
     }
 }

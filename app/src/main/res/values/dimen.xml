@@ -4,4 +4,5 @@
     <dimen name="input_margin">10dp</dimen>
     <dimen name="toolbarHeight">56dp</dimen>
     <dimen name="marginTopContent">70dp</dimen>
+    <dimen name="listHeight">80dp</dimen>
 </resources>
