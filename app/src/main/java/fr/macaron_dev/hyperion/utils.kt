@@ -1,5 +1,9 @@
 package fr.macaron_dev.hyperion
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import java.security.InvalidParameterException
 import java.security.MessageDigest
 
 val api = API()
@@ -19,4 +23,9 @@ private fun bytesToHex(hash: ByteArray): String{
         hexString.append(hex)
     }
     return hexString.toString()
+}
+
+fun b64ToBitmap(b64: String): Bitmap{
+    val bytes = Base64.decode(b64, Base64.DEFAULT)
+    return BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: throw InvalidParameterException("Error b64 string not image")
 }

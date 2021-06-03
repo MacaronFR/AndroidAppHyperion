@@ -1,19 +1,11 @@
-package fr.macaron_dev.hyperion
+package fr.macaron_dev.hyperion.activity
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
-import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.findNavController
@@ -22,14 +14,15 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import fr.macaron_dev.hyperion.ui.dialog.DisconnectDialog
+import fr.macaron_dev.hyperion.R
+import fr.macaron_dev.hyperion.api
 import fr.macaron_dev.hyperion.database.HyperionDbHelper
 import kotlinx.coroutines.*
-import kotlin.properties.Delegates
 
 class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private var toolBarHeight by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +63,7 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
     }
 
     override fun onBackPressed() {
-        val dial = DisconnectDialog();
+        val dial = DisconnectDialog()
         dial.show(supportFragmentManager, "Disconnect")
     }
 

@@ -1,16 +1,17 @@
-package fr.macaron_dev.hyperion
+package fr.macaron_dev.hyperion.ui.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import fr.macaron_dev.hyperion.R
 import java.lang.ClassCastException
 import java.lang.IllegalStateException
 
 class DisconnectDialog: DialogFragment() {
 
-    internal lateinit var listener: DisconnectDialogListener
+    private lateinit var listener: DisconnectDialogListener
 
     interface DisconnectDialogListener{
         fun onDialogPositiveClick(dialog: DialogFragment)

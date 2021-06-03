@@ -1,9 +1,11 @@
-package fr.macaron_dev.hyperion
+package fr.macaron_dev.hyperion.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import fr.macaron_dev.hyperion.R
+import fr.macaron_dev.hyperion.api
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

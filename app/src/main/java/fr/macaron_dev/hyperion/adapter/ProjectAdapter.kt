@@ -1,9 +1,7 @@
-package fr.macaron_dev.hyperion
+package fr.macaron_dev.hyperion.adapter
 
 import android.content.ContentValues
-import android.graphics.BitmapFactory
 import android.provider.BaseColumns
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,21 +9,34 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import fr.macaron_dev.hyperion.R
+import fr.macaron_dev.hyperion.api
+import fr.macaron_dev.hyperion.b64ToBitmap
+import fr.macaron_dev.hyperion.data.Project
 import fr.macaron_dev.hyperion.database.Hyperion
 import fr.macaron_dev.hyperion.database.HyperionDbHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.InvalidParameterException
 
-class ProjectAdapter(private val projects: MutableList<Project>, private val dbHelper: HyperionDbHelper): RecyclerView.Adapter<ProjectAdapter.ViewHolder>() {
-    inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view){
+class ProjectAdapter(private val projects: MutableList<Project>, private val dbHelper: HyperionDbHelper, private val onClick: (Project) -> Unit): RecyclerView.Adapter<ProjectAdapter.ViewHolder>() {
+    inner class ViewHolder(private val view: View, val onClick: (Project) -> Unit): RecyclerView.ViewHolder(view){
         private val projectLogo = view.findViewById<ImageView>(R.id.projectLogo)
         private val projectName = view.findViewById<TextView>(R.id.projectName)
         private val projectDesc = view.findViewById<TextView>(R.id.projectDesc)
         private val projectLeft = view.findViewById<TextView>(R.id.projectLeft)
         private val projectContrib = view.findViewById<TextView>(R.id.projectContrib)
         private var currentProject: Project? = null
+
+        init {
+            itemView.setOnClickListener {
+                currentProject?.let{
+                    onClick(it)
+                }
+            }
+        }
 
         fun bind(project: Project){
             val dbW = dbHelper.writableDatabase
@@ -46,9 +57,12 @@ class ProjectAdapter(private val projects: MutableList<Project>, private val dbH
             )
             if(cursor.count > 0){
                 cursor.moveToNext()
-                val bytes = Base64.decode(cursor.getString(cursor.getColumnIndexOrThrow(Hyperion.Logo.COLUMN_NAME_CONTENT)), Base64.DEFAULT)
-                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                projectLogo.setImageBitmap(bitmap)
+                try {
+                    val b64 = cursor.getString(cursor.getColumnIndexOrThrow(Hyperion.Logo.COLUMN_NAME_CONTENT))
+                    projectLogo.setImageBitmap(b64ToBitmap(b64))
+                }catch (e: InvalidParameterException){
+
+                }
             }else {
                 CoroutineScope(Dispatchers.Default).launch {
                     val logo = api.getLogo(project.id)
@@ -62,10 +76,9 @@ class ProjectAdapter(private val projects: MutableList<Project>, private val dbH
                             put(Hyperion.Logo.COLUMN_NAME_CONTENT, logo.getString("content"))
                         }
                         dbW.insert(Hyperion.Logo.TABLE_NAME, null, value)
-                        val bytes = Base64.decode(logo.getString("content"), Base64.DEFAULT)
-                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        val b64 = logo.getString("content")
                         withContext(Dispatchers.Main) {
-                            projectLogo.setImageBitmap(bitmap)
+                            projectLogo.setImageBitmap(b64ToBitmap(b64))
                             Toast.makeText(view.context, "From API", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -81,7 +94,7 @@ class ProjectAdapter(private val projects: MutableList<Project>, private val dbH
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_project, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, onClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

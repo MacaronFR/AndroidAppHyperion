@@ -1,4 +1,6 @@
-package fr.macaron_dev.hyperion
+package fr.macaron_dev.hyperion.data
+
+import java.io.Serializable
 
 data class Project(
     val id: Int,
@@ -6,5 +8,5 @@ data class Project(
     val name: String,
     val description: String,
     val left: Int,
-    val contribution: Int
-)
+    val contribution: Int,
+): Serializable

@@ -9,16 +9,19 @@
             android:roundIcon="@drawable/logo_yellow_bg"
             android:supportsRtl="true"
             android:theme="@style/Theme.Hyperion">
-        <activity android:name=".LoginActivity" android:windowSoftInputMode="adjustResize|stateHidden" android:screenOrientation="portrait">
+        <activity android:name=".activity.LoginActivity" android:windowSoftInputMode="adjustResize|stateHidden" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".LoadingActivity">
+        <activity android:name=".activity.LoadingActivity">
 
         </activity>
-        <activity android:name=".HomeActivity">
+        <activity android:name=".activity.HomeActivity">
+
+        </activity>
+        <activity android:name=".activity.ProjectDetailActivity">
 
         </activity>
     </application>

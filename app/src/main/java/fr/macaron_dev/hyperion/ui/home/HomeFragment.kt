@@ -1,7 +1,8 @@
 package fr.macaron_dev.hyperion.ui.home
 
-import android.database.sqlite.SQLiteDatabase
+import android.content.Intent
 import android.os.Bundle
+import android.provider.BaseColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,25 +11,26 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import fr.macaron_dev.hyperion.Project
-import fr.macaron_dev.hyperion.ProjectAdapter
+import fr.macaron_dev.hyperion.data.Project
+import fr.macaron_dev.hyperion.adapter.ProjectAdapter
 import fr.macaron_dev.hyperion.R
+import fr.macaron_dev.hyperion.activity.ProjectDetailActivity
 import fr.macaron_dev.hyperion.api
+import fr.macaron_dev.hyperion.database.Hyperion
 import fr.macaron_dev.hyperion.database.HyperionDbHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
-    private lateinit var homeViewModel: HomeViewModel
     private lateinit var root: View
     private lateinit var dbHelper: HyperionDbHelper
 
@@ -37,7 +39,6 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         root = inflater.inflate(R.layout.fragment_home, container, false)
         val spinner = root.findViewById<Spinner>(R.id.home_spinner)
         spinner.onItemSelectedListener = this
@@ -61,13 +62,24 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
             }
             1L -> {
-
+                CoroutineScope(Dispatchers.Default).launch {
+                    onSelectPopularProject()
+                }
             }
         }
     }
 
     private suspend fun onSelectLatestProject(){
         val project = api.getLatestProject()
+        prepareAndDisplayRecycler(project)
+    }
+
+    private suspend fun onSelectPopularProject() {
+        val project = api.getPopularProject()
+        prepareAndDisplayRecycler(project)
+    }
+
+    private suspend fun prepareAndDisplayRecycler(project: JSONArray){
         if ((project[0] is JSONObject)) {
             val projects = mutableListOf<Project>()
             for (i in 0 until project.length()) {
@@ -96,7 +108,7 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
             withContext(Dispatchers.Main) {
                 val recycler = root.findViewById<RecyclerView>(R.id.recyclerProject)
                 recycler.apply {
-                    adapter = ProjectAdapter(projects, dbHelper)
+                    adapter = ProjectAdapter(projects, dbHelper){project -> adapterOnClick(project)}
                     addItemDecoration(DividerItemDecoration(root.context, DividerItemDecoration.VERTICAL))
                 }
             }
@@ -105,6 +117,12 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 Toast.makeText(root.context, "NIKKK", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun adapterOnClick(project: Project){
+        val intent = Intent(root.context, ProjectDetailActivity::class.java)
+        intent.putExtra("project", project)
+        startActivity(intent)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
