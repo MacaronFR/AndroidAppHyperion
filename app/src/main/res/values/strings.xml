@@ -13,4 +13,5 @@
     <string name="days_left">%1$d Jours restant</string>
     <string name="contrib">Contributions : %1$d Green coins</string>
     <string name="project_logo">Project Logo</string>
+    <string name="contribute">Contribuer</string>
 </resources>

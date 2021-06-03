@@ -31,8 +31,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/ProjectDetailContribution"/>
         <Button
-                android:text="Button"
+                android:text="@string/contribute"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/button"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/button_contribute"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

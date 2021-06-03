@@ -13,7 +13,7 @@ import java.nio.channels.UnresolvedAddressException
 
 class API: Serializable {
     private val endpoint = "https://api.hyperion.dev.macaron-dev.fr"
-    private lateinit var token: String
+    private var token: String? = null
     private val clientId = "1234"
     private val clientSecret = "9876"
     @Transient
@@ -84,5 +84,9 @@ class API: Serializable {
         }else{
             res
         }
+    }
+
+    fun isConnected(): Boolean{
+        return token != null
     }
 }

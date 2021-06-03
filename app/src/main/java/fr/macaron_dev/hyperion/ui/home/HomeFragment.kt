@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import fr.macaron_dev.hyperion.data.Project
 import fr.macaron_dev.hyperion.adapter.ProjectAdapter
 import fr.macaron_dev.hyperion.R
@@ -29,10 +30,12 @@ import org.json.JSONObject
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
-class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var root: View
     private lateinit var dbHelper: HyperionDbHelper
+    private lateinit var spinner: Spinner
+    private lateinit var swipe: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,8 +43,10 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
         savedInstanceState: Bundle?
     ): View {
         root = inflater.inflate(R.layout.fragment_home, container, false)
-        val spinner = root.findViewById<Spinner>(R.id.home_spinner)
+        spinner = root.findViewById(R.id.home_spinner)
         spinner.onItemSelectedListener = this
+        swipe = root.findViewById(R.id.swipeHome)
+        swipe.setOnRefreshListener(this)
         ArrayAdapter.createFromResource(
             root.context,
             R.array.home_spinner,
@@ -55,7 +60,11 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        when (id) {
+        refreshRecycler(id)
+    }
+
+    private fun refreshRecycler(mode: Long){
+        when (mode) {
             0L -> {
                 CoroutineScope(Dispatchers.Default).launch {
                     onSelectLatestProject()
@@ -110,11 +119,13 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 recycler.apply {
                     adapter = ProjectAdapter(projects, dbHelper){project -> adapterOnClick(project)}
                     addItemDecoration(DividerItemDecoration(root.context, DividerItemDecoration.VERTICAL))
+                    swipe.isRefreshing = false
                 }
             }
         } else {
             withContext(Dispatchers.Main) {
                 Toast.makeText(root.context, "NIKKK", Toast.LENGTH_SHORT).show()
+                swipe.isRefreshing = false
             }
         }
     }
@@ -128,4 +139,10 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onNothingSelected(parent: AdapterView<*>?) {
         return
     }
+
+    override fun onRefresh() {
+        refreshRecycler(spinner.selectedItemId)
+    }
+
+
 }
