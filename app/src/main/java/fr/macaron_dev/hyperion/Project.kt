@@ -1,10 +1,10 @@
 package fr.macaron_dev.hyperion
 
 data class Project(
-    val logo: String,
+    val id: Int,
+    val logo: Int,
     val name: String,
     val description: String,
-    val start: String,
-    val duration: String,
+    val left: Int,
     val contribution: Int
 )

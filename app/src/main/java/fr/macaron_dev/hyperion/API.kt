@@ -60,11 +60,20 @@ class API: Serializable {
     }
 
     suspend fun getLatestProject(): JSONArray{
-        val res = request("/project/latest/0")
+        val res = request("/project/nologo/latest/0")
         return if((res.get("status") as JSONObject).get("code") == 200){
             res.get("content") as JSONArray
         }else{
             JSONArray("[500, \"Internal Server Error\"]")
+        }
+    }
+
+    suspend fun getLogo(id: Int): JSONObject{
+        val res = request("/project/logo/$id")
+        return if ((res.get("status") as JSONObject).get("code") == 200){
+            res.get("content") as JSONObject
+        }else{
+            res
         }
     }
 }

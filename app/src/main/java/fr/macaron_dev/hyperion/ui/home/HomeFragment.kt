@@ -1,5 +1,6 @@
 package fr.macaron_dev.hyperion.ui.home
 
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,16 +17,20 @@ import fr.macaron_dev.hyperion.Project
 import fr.macaron_dev.hyperion.ProjectAdapter
 import fr.macaron_dev.hyperion.R
 import fr.macaron_dev.hyperion.api
+import fr.macaron_dev.hyperion.database.HyperionDbHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var root: View
+    private lateinit var dbHelper: HyperionDbHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +49,7 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
         }
+        dbHelper = HyperionDbHelper(root.context)
         return root
     }
 
@@ -51,43 +57,52 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
         when (id) {
             0L -> {
                 CoroutineScope(Dispatchers.Default).launch {
-                    val project = api.getLatestProject()
-                    if ((project[0] is JSONObject)) {
-                        val projects = mutableListOf<Project>()
-                        for (i in 0 until project.length()) {
-                            println((project[i] as JSONObject).get("contribution"))
-                            val contrib: Int = if((project[i] as JSONObject).getString("contribution").equals("null")){
-                                0
-                            }else{
-                                (project[i] as JSONObject).getInt("contribution")
-                            }
-                            projects.add(
-                                Project(
-                                    (project[i] as JSONObject).getJSONObject("logo").getString("content"),
-                                    (project[i] as JSONObject).getString("name"),
-                                    (project[i] as JSONObject).getString("description"),
-                                    (project[i] as JSONObject).getString("start"),
-                                    (project[i] as JSONObject).getString("duration"),
-                                    contrib
-                                )
-                            )
-                        }
-                        withContext(Dispatchers.Main) {
-                            val recycler = root.findViewById<RecyclerView>(R.id.recyclerProject)
-                            recycler.apply {
-                                adapter = ProjectAdapter(projects)
-                                addItemDecoration(DividerItemDecoration(root.context, DividerItemDecoration.VERTICAL))
-                            }
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(root.context, "NIKKK", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                    onSelectLatestProject()
                 }
             }
             1L -> {
 
+            }
+        }
+    }
+
+    private suspend fun onSelectLatestProject(){
+        val project = api.getLatestProject()
+        if ((project[0] is JSONObject)) {
+            val projects = mutableListOf<Project>()
+            for (i in 0 until project.length()) {
+                with(project[i] as JSONObject) {
+                    println(get("contribution"))
+                    val contrib: Int = if (this.getString("contribution").equals("null")) {
+                        0
+                    } else {
+                        this.getInt("contribution")
+                    }
+                    var date = LocalDate.parse(this.getString("start"))
+                    date = date.plusDays(this.getString("duration").toLong())
+                    val diff = ChronoUnit.DAYS.between(LocalDate.now(), date)
+                    projects.add(
+                        Project(
+                            this.getInt("id"),
+                            this.getInt("logo"),
+                            this.getString("name"),
+                            this.getString("description"),
+                            diff.toInt(),
+                            contrib
+                        )
+                    )
+                }
+            }
+            withContext(Dispatchers.Main) {
+                val recycler = root.findViewById<RecyclerView>(R.id.recyclerProject)
+                recycler.apply {
+                    adapter = ProjectAdapter(projects, dbHelper)
+                    addItemDecoration(DividerItemDecoration(root.context, DividerItemDecoration.VERTICAL))
+                }
+            }
+        } else {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(root.context, "NIKKK", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -22,6 +22,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import fr.macaron_dev.hyperion.database.HyperionDbHelper
 import kotlinx.coroutines.*
 import kotlin.properties.Delegates
 
@@ -74,6 +75,7 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
+        applicationContext.deleteDatabase(HyperionDbHelper.DATABASE_NAME)
         finish()
     }
 
