@@ -11,12 +11,11 @@ import org.json.JSONObject
 import java.io.Serializable
 import java.nio.channels.UnresolvedAddressException
 
-class API: Serializable {
+class API{
     private val endpoint = "https://api.hyperion.dev.macaron-dev.fr"
     private var token: String? = null
-    private val clientId = "1234"
-    private val clientSecret = "9876"
-    @Transient
+    private val clientId = "11122001"
+    private val clientSecret = "31122004"
     private val httpClient = HttpClient(CIO)
 
     suspend fun connect(mail: String, password: String): Int{
@@ -31,16 +30,32 @@ class API: Serializable {
         }
     }
 
-    private suspend fun request(uri: String):JSONObject{
+    private suspend fun request(uri: String): JSONObject{
+        return request(uri, "GET", null)
+    }
+
+    private suspend fun request(uri: String, method: String, body: String?):JSONObject{
         val url = "$endpoint$uri"
         return try {
-            val response: HttpResponse
+            val response: HttpResponse?
             try {
-                response = httpClient.get(url)
+                response = when(method){
+                    "GET" -> httpClient.get(url)
+                    "POST" -> httpClient.post(url){
+                        if(body != null){
+                            this.body = body
+                        }
+                    }
+                    else -> null
+                }
             }catch (e: UnresolvedAddressException){
                 return JSONObject("{\"status\":{\"code\": 0, \"message\": \"Connection to Server cannot be established\"}}")
             }
-            JSONObject(response.readText())
+            try {
+                JSONObject(response?.readText() ?: "{\"status\":{\"code\": 1, \"message\": \"Bad Method\"}}")
+            }catch (e: JSONException){
+                JSONObject("{\"status\":{\"code\": 2, \"message\": \"Not JSON Return\"}}")
+            }
         }catch (e: ClientRequestException){
             try {
                 JSONObject(e.response.readText())
@@ -84,6 +99,12 @@ class API: Serializable {
         }else{
             res
         }
+    }
+
+    suspend fun postContribute(project: Int, amount: Int): Boolean{
+        val jsonString = "{\"amount\": $amount, \"project\": $project}"
+        val res = request("/project/contribute/$token", "POST", jsonString)
+        return (res.get("status") as JSONObject).get("code") == 200
     }
 
     fun isConnected(): Boolean{

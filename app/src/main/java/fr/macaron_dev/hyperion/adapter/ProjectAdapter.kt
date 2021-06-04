@@ -60,9 +60,7 @@ class ProjectAdapter(private val projects: MutableList<Project>, private val dbH
                 try {
                     val b64 = cursor.getString(cursor.getColumnIndexOrThrow(Hyperion.Logo.COLUMN_NAME_CONTENT))
                     projectLogo.setImageBitmap(b64ToBitmap(b64))
-                }catch (e: InvalidParameterException){
-
-                }
+                }catch (e: InvalidParameterException){}
             }else {
                 CoroutineScope(Dispatchers.Default).launch {
                     val logo = api.getLogo(project.id)
@@ -78,8 +76,9 @@ class ProjectAdapter(private val projects: MutableList<Project>, private val dbH
                         dbW.insert(Hyperion.Logo.TABLE_NAME, null, value)
                         val b64 = logo.getString("content")
                         withContext(Dispatchers.Main) {
-                            projectLogo.setImageBitmap(b64ToBitmap(b64))
-                            Toast.makeText(view.context, "From API", Toast.LENGTH_SHORT).show()
+                            try {
+                                projectLogo.setImageBitmap(b64ToBitmap(b64))
+                            }catch (e: InvalidParameterException){}
                         }
                     }
                 }
