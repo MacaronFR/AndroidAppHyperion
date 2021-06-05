@@ -6,10 +6,7 @@ import android.provider.BaseColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -120,6 +117,7 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener, SwipeRefres
             }
             withContext(Dispatchers.Main) {
                 val recycler = root.findViewById<RecyclerView>(R.id.recyclerProject)
+                root.findViewById<ProgressBar>(R.id.HomeLoadingSpinner).visibility = View.GONE
                 recycler.apply {
                     adapter = ProjectAdapter(projects, dbHelper){project -> adapterOnClick(project)}
                     addItemDecoration(DividerItemDecoration(root.context, DividerItemDecoration.VERTICAL))
@@ -128,7 +126,7 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener, SwipeRefres
             }
         } else {
             withContext(Dispatchers.Main) {
-                Toast.makeText(root.context, "NIKKK", Toast.LENGTH_SHORT).show()
+                Toast.makeText(root.context, "Error", Toast.LENGTH_SHORT).show()
                 swipe.isRefreshing = false
             }
         }
