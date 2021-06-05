@@ -23,6 +23,7 @@ import kotlinx.coroutines.*
 class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var navView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,13 +32,17 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val drawer = findViewById<DrawerLayout>(R.id.drawerLayout)
-        val navView = findViewById<NavigationView>(R.id.navView)
+        navView = findViewById(R.id.navView)
         val navController = findNavController(R.id.navViewFragmentManager)
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.nav_home, R.id.nav_project, R.id.nav_about, R.id.nav_admin), drawer
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onResume() {
+        super.onResume()
         val gcCount: ActionMenuItemView = findViewById(R.id.gcCount)
         CoroutineScope(Dispatchers.Default).launch {
             val profile = api.getProfile()

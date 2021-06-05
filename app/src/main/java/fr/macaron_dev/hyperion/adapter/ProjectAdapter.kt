@@ -15,6 +15,7 @@ import fr.macaron_dev.hyperion.b64ToBitmap
 import fr.macaron_dev.hyperion.data.Project
 import fr.macaron_dev.hyperion.database.Hyperion
 import fr.macaron_dev.hyperion.database.HyperionDbHelper
+import fr.macaron_dev.hyperion.retrieveLogo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,24 +43,10 @@ class ProjectAdapter(private val projects: MutableList<Project>, private val dbH
             val dbW = dbHelper.writableDatabase
             val dbR = dbHelper.readableDatabase
             currentProject = project
-            val projection = arrayOf(Hyperion.Logo.COLUMN_NAME_CONTENT, BaseColumns._ID)
-            val selection = "${Hyperion.Logo.COLUMN_NAME_ID} = ?"
-            val selectionArgs = arrayOf(project.logo.toString())
-
-            val cursor = dbR.query(
-                Hyperion.Logo.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-            )
-            if(cursor.count > 0){
-                cursor.moveToNext()
+            var b64 = retrieveLogo(project.logo, dbR)
+            if(b64 != null){
                 try {
-                    val b64 = cursor.getString(cursor.getColumnIndexOrThrow(Hyperion.Logo.COLUMN_NAME_CONTENT))
-                    projectLogo.setImageBitmap(b64ToBitmap(b64))
+                projectLogo.setImageBitmap(b64ToBitmap(b64))
                 }catch (e: InvalidParameterException){}
             }else {
                 CoroutineScope(Dispatchers.Default).launch {
@@ -74,16 +61,15 @@ class ProjectAdapter(private val projects: MutableList<Project>, private val dbH
                             put(Hyperion.Logo.COLUMN_NAME_CONTENT, logo.getString("content"))
                         }
                         dbW.insert(Hyperion.Logo.TABLE_NAME, null, value)
-                        val b64 = logo.getString("content")
+                        b64 = logo.getString("content")
                         withContext(Dispatchers.Main) {
                             try {
-                                projectLogo.setImageBitmap(b64ToBitmap(b64))
+                                projectLogo.setImageBitmap(b64ToBitmap(b64!!))
                             }catch (e: InvalidParameterException){}
                         }
                     }
                 }
             }
-            cursor.close()
             projectName.text = project.name
             projectDesc.text = project.description
             projectLeft.text =  view.resources.getString(R.string.days_left, project.left)

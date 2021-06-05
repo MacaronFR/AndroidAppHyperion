@@ -43,6 +43,12 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener, SwipeRefres
         savedInstanceState: Bundle?
     ): View {
         root = inflater.inflate(R.layout.fragment_home, container, false)
+        dbHelper = HyperionDbHelper(root.context)
+        return root
+    }
+
+    override fun onResume() {
+        super.onResume()
         spinner = root.findViewById(R.id.home_spinner)
         spinner.onItemSelectedListener = this
         swipe = root.findViewById(R.id.swipeHome)
@@ -55,8 +61,6 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener, SwipeRefres
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
         }
-        dbHelper = HyperionDbHelper(root.context)
-        return root
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

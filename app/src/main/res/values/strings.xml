@@ -14,4 +14,6 @@
     <string name="contrib">Contributions : %1$d Green coins</string>
     <string name="project_logo">Project Logo</string>
     <string name="contribute">Contribuer</string>
+    <string name="amount">Montant</string>
+    <string name="cancel">Retour</string>
 </resources>

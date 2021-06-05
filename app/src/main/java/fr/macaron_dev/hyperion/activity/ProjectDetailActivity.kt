@@ -1,26 +1,25 @@
 package fr.macaron_dev.hyperion.activity
 
+import android.app.Dialog
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import fr.macaron_dev.hyperion.R
-import fr.macaron_dev.hyperion.api
-import fr.macaron_dev.hyperion.b64ToBitmap
+import androidx.fragment.app.DialogFragment
+import fr.macaron_dev.hyperion.*
 import fr.macaron_dev.hyperion.data.Project
 import fr.macaron_dev.hyperion.database.Hyperion
 import fr.macaron_dev.hyperion.database.HyperionDbHelper
+import fr.macaron_dev.hyperion.ui.dialog.ContributeDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.security.InvalidParameterException
 
-class ProjectDetailActivity: AppCompatActivity() {
+class ProjectDetailActivity: AppCompatActivity(), ContributeDialog.ContributeDialogListener {
 
     private lateinit var project: Project
 
@@ -37,28 +36,9 @@ class ProjectDetailActivity: AppCompatActivity() {
         val contributeButton = findViewById<Button>(R.id.button_contribute)
         contributeButton.setOnClickListener(contributeListener)
 
-        val projection = arrayOf(Hyperion.Logo.COLUMN_NAME_CONTENT, BaseColumns._ID)
-        val selection = "${Hyperion.Logo.COLUMN_NAME_ID} = ?"
-        val selectionArgs = arrayOf(project.logo.toString())
-
-        val cursor = db.query(
-            Hyperion.Logo.TABLE_NAME,
-            projection,
-            selection,
-            selectionArgs,
-            null,
-            null,
-            null
-        )
-        if(cursor.count > 0){
-            cursor.moveToNext()
-            try {
-                val b64 = cursor.getString(cursor.getColumnIndexOrThrow(Hyperion.Logo.COLUMN_NAME_CONTENT))
-                logo.setImageBitmap(b64ToBitmap(b64))
-            }catch (e: InvalidParameterException){}
-        }
-
-        cursor.close()
+        logo.setImageBitmap(retrieveLogo(project.logo, db)?.let {
+            b64ToBitmap(it)
+        })
 
         with(project) {
             textName.text = name
@@ -69,10 +49,17 @@ class ProjectDetailActivity: AppCompatActivity() {
     }
 
     private val contributeListener = View.OnClickListener {
+        val dial = ContributeDialog()
+        dial.show(supportFragmentManager, null)
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        val amount = dialog.dialog?.findViewById<EditText>(R.id.amount)?.text?.toString()?.toInt() ?: return
         CoroutineScope(Dispatchers.Default).launch{
-            if(api.postContribute(project.id, 1)){
+            if(api.postContribute(project.id, amount)){
                 withContext(Dispatchers.Main){
-                    Toast.makeText(applicationContext, "OK", Toast.LENGTH_SHORT).show()
+                    val textContrib = findViewById<TextView>(R.id.ProjectDetailContribution)
+                    textContrib.text = getString(R.string.contrib, amount + project.contribution)
                 }
             }else{
                 withContext(Dispatchers.Main){
@@ -80,5 +67,9 @@ class ProjectDetailActivity: AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        dialog.dismiss()
     }
 }
