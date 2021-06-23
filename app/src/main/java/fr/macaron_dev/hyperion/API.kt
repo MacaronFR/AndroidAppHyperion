@@ -8,7 +8,6 @@ import io.ktor.client.statement.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.Serializable
 import java.nio.channels.UnresolvedAddressException
 
 class API{
@@ -97,7 +96,7 @@ class API{
         if(search != null){
             url = "$url/$search"
         }
-        val res = request(url);
+        val res = request(url)
         return if((res.get("status") as JSONObject).get("code") == 200){
             res.get("content") as JSONArray
         }else{
