@@ -2,7 +2,6 @@ package fr.macaron_dev.hyperion.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.BaseColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import fr.macaron_dev.hyperion.adapter.ProjectAdapter
 import fr.macaron_dev.hyperion.R
 import fr.macaron_dev.hyperion.activity.ProjectDetailActivity
 import fr.macaron_dev.hyperion.api
-import fr.macaron_dev.hyperion.database.Hyperion
 import fr.macaron_dev.hyperion.database.HyperionDbHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

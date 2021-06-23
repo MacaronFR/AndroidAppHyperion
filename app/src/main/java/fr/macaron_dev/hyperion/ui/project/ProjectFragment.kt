@@ -37,8 +37,8 @@ class ProjectFragment: Fragment(), SwipeRefreshLayout.OnRefreshListener {
         savedInstanceState: Bundle?
     ): View {
         root = inflater.inflate(R.layout.fragment_project, container, false)
-        dbHelper = HyperionDbHelper(root.context);
-        return root;
+        dbHelper = HyperionDbHelper(root.context)
+        return root
     }
 
     override fun onResume() {
@@ -47,7 +47,7 @@ class ProjectFragment: Fragment(), SwipeRefreshLayout.OnRefreshListener {
         swipe.setOnRefreshListener(this)
         CoroutineScope(Dispatchers.Default).launch{
             val project = api.getLatestProject()
-            prepareAndDisplayRecycler(project);
+            prepareAndDisplayRecycler(project)
         }
     }
 
@@ -102,7 +102,7 @@ class ProjectFragment: Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onRefresh() {
         CoroutineScope(Dispatchers.Default).launch{
             val project = api.getLatestProject()
-            prepareAndDisplayRecycler(project);
+            prepareAndDisplayRecycler(project)
         }
     }
 }

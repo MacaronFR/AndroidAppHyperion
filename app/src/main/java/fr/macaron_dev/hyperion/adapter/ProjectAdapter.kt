@@ -1,7 +1,6 @@
 package fr.macaron_dev.hyperion.adapter
 
 import android.content.ContentValues
-import android.provider.BaseColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
