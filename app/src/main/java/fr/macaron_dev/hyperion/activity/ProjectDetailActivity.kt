@@ -37,7 +37,11 @@ class ProjectDetailActivity: AppCompatActivity(), ContributeDialog.ContributeDia
         contributeButton.setOnClickListener(contributeListener)
 
         logo.setImageBitmap(retrieveLogo(project.logo, db)?.let {
-            b64ToBitmap(it)
+            try {
+                b64ToBitmap(it)
+            }catch (e: InvalidParameterException){
+                null
+            }
         })
 
         with(project) {

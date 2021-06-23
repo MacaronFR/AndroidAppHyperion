@@ -5,6 +5,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -94,7 +95,7 @@ class API{
     suspend fun getProject(page: Int, search: String?): JSONArray{
         var url = "/project/nologo/$page"
         if(search != null){
-            url = "$url/$search"
+            url = "$url/search/$search"
         }
         val res = request(url)
         return if((res.get("status") as JSONObject).get("code") == 200){
