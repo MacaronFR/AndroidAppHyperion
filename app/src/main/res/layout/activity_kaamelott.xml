@@ -4,8 +4,8 @@
                                                    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
 
-    <ImageView
+    <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" app:srcCompat="@drawable/arthur" android:id="@+id/imageView3"
+            android:layout_height="match_parent" android:background="@drawable/arthur"
             tools:layout_editor_absoluteY="160dp" tools:layout_editor_absoluteX="28dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
