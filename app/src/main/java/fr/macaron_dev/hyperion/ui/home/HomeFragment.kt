@@ -95,7 +95,7 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener, SwipeRefres
             for (i in 0 until project.length()) {
                 with(project[i] as JSONObject) {
                     println(get("contribution"))
-                    val contrib: Int = if (this.getString("contribution").equals("null")) {
+                    val contrib = if (this.getString("contribution").equals("null")) {
                         0
                     } else {
                         this.getInt("contribution")
