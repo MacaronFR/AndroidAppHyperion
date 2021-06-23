@@ -92,6 +92,19 @@ class API{
         }
     }
 
+    suspend fun getProject(page: Int, search: String?): JSONArray{
+        var url = "/project/nologo/$page"
+        if(search != null){
+            url = "$url/$search"
+        }
+        val res = request(url);
+        return if((res.get("status") as JSONObject).get("code") == 200){
+            res.get("content") as JSONArray
+        }else{
+            JSONArray("[500, \"Internal Server Error\"]")
+        }
+    }
+
     suspend fun getLogo(id: Int): JSONObject{
         val res = request("/project/logo/$id")
         return if ((res.get("status") as JSONObject).get("code") == 200){
