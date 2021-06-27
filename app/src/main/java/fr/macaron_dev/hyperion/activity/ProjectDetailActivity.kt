@@ -67,7 +67,7 @@ class ProjectDetailActivity: AppCompatActivity(), ContributeDialog.ContributeDia
                 }
             }else{
                 withContext(Dispatchers.Main){
-                    Toast.makeText(applicationContext, "NIK", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Erreur", Toast.LENGTH_SHORT).show()
                 }
             }
         }

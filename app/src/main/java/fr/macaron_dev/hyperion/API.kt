@@ -1,10 +1,12 @@
 package fr.macaron_dev.hyperion
 
+import androidx.annotation.BoolRes
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONException
@@ -118,6 +120,16 @@ class API{
         val jsonString = "{\"amount\": $amount, \"project\": $project}"
         val res = request("/project/contribute/$token", "POST", jsonString)
         return (res.get("status") as JSONObject).get("code") == 200
+    }
+
+    suspend fun postProject(name: String, desc: String, start: String, duration: Int, RNA: String): Boolean{
+        val logo = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TtUUqDhYUdchQnSwUFXHUKhShQqgVWnUwufRDaNKQtLg4Cq4FBz8Wqw4uzro6uAqC4AeIm5uToouU+L+k0CLGg+N+vLv3uHsHCPUS06yOGKDpFTOViIuZ7IoYeEUXhhBEDP0ys4xZSUrCc3zdw8fXuyjP8j735+hRcxYDfCLxDDPMCvE68dRmxeC8TxxmRVklPiceM+mCxI9cV1x+41xwWOCZYTOdmiMOE4uFNlbamBVNjXiSOKJqOuULGZdVzluctVKVNe/JXxjK6ctLXKc5jAQWsAgJIhRUsYESKojSqpNiIUX7cQ//oOOXyKWQawOMHPMoQ4Ps+MH/4He3Vn5i3E0KxYHOF9v+GAECu0CjZtvfx7bdOAH8z8CV3vKX68D0J+m1lhY5Anq3gYvrlqbsAZc7wMCTIZuyI/lpCvk88H5G35QF+m6B7lW3t+Y+Th+ANHWVvAEODoHRAmWvebw72N7bv2ea/f0AhKhyrtWXvPkAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQflBhsIMSx4kz9GAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAAxJREFUCNdj2M/IDAACRgDElnpKxwAAAABJRU5ErkJggg=="
+        val jsonString = "{\"name\": \"$name\", \"description\": \"$desc\", \"start\": \"$start\", \"duration\": $duration, \"RNA\": \"$RNA\", \"logo\": {\"filename\": \"LOL\", \"type\": \"image/png\", \"content\": \"$logo\"}}"
+        val res = request("/project/$token", "POST", jsonString)
+        withContext(Dispatchers.Default) {
+            println(jsonString)
+        }
+        return (res.get("status") as JSONObject).getInt("code") == 200
     }
 
     fun isConnected(): Boolean{

@@ -35,7 +35,7 @@ class HomeActivity: AppCompatActivity(), DisconnectDialog.DisconnectDialogListen
         navView = findViewById(R.id.navView)
         val navController = findNavController(R.id.navViewFragmentManager)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_project, R.id.nav_about, R.id.nav_admin), drawer
+            setOf(R.id.nav_home, R.id.nav_project, R.id.nav_about, R.id.nav_admin, R.id.nav_add), drawer
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)

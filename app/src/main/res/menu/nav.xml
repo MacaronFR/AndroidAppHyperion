@@ -7,5 +7,6 @@
     </group>
     <group android:id="@+id/group_nav_admin">
         <item android:title="Administration" android:id="@+id/nav_admin"/>
+        <item android:title="Ajouter un projet" android:id="@+id/nav_add"/>
     </group>
 </menu>

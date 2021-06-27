@@ -46,9 +46,6 @@ class ProjectFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Search
                     CoroutineScope(Dispatchers.Default).launch {
                         page++
                         val search = root.findViewById<SearchView>(R.id.projectSearch).query.let {
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(root.context, it, Toast.LENGTH_SHORT).show()
-                            }
                             if(it == ""){
                                 null
                             }else{
