@@ -7,9 +7,9 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent">
         <ImageView android:layout_width="match_parent"
-                   android:layout_height="100dp"
+                   android:layout_height="wrap_content"
                    android:id="@+id/ProjectDetailLogo"
                    android:contentDescription="@string/project_logo"/>
         <TextView
@@ -29,9 +29,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/ProjectDetailContribution"/>
         <Button
-                android:text="@string/contribute"
+                android:text="@string/valid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/button_contribute"/>
+                android:id="@+id/button_valid"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,9 +7,28 @@
         android:layout_height="match_parent"
         tools:context=".ui.admin.AdminFragment">
 
-    <ToggleButton
-            android:text="ToggleButton"
-            android:layout_width="347dp"
-            android:layout_height="200dp" android:id="@+id/toggleButton" tools:layout_editor_absoluteY="317dp"
-            tools:layout_editor_absoluteX="16dp"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" tools:layout_editor_absoluteY="297dp"
+            tools:layout_editor_absoluteX="234dp">
+        <SearchView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/adminSearch"/>
+        <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/admin_spinner"/>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" android:id="@+id/swipeAdmin">
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:id="@+id/admin_recycler"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

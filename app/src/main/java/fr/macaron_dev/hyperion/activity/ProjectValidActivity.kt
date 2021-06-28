@@ -19,13 +19,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.security.InvalidParameterException
 
-class ProjectDetailActivity: AppCompatActivity(), ContributeDialog.ContributeDialogListener {
+class ProjectValidActivity: AppCompatActivity(){
 
     private lateinit var project: Project
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.project_detail_activity)
+        setContentView(R.layout.activty_confirm_project)
         project = intent.getSerializableExtra("project") as Project
         val db = HyperionDbHelper(applicationContext).readableDatabase
         val logo = findViewById<ImageView>(R.id.ProjectDetailLogo)
@@ -33,7 +33,7 @@ class ProjectDetailActivity: AppCompatActivity(), ContributeDialog.ContributeDia
         val textDesc = findViewById<TextView>(R.id.ProjectDetailDesc)
         val textLeft = findViewById<TextView>(R.id.ProjectDetailLeft)
         val textContrib = findViewById<TextView>(R.id.ProjectDetailContribution)
-        val contributeButton = findViewById<Button>(R.id.button_contribute)
+        val contributeButton = findViewById<Button>(R.id.button_valid)
         contributeButton.setOnClickListener(contributeListener)
 
         logo.setImageBitmap(retrieveLogo(project.logo, db)?.let {
@@ -53,18 +53,10 @@ class ProjectDetailActivity: AppCompatActivity(), ContributeDialog.ContributeDia
     }
 
     private val contributeListener = View.OnClickListener {
-        val dial = ContributeDialog()
-        dial.show(supportFragmentManager, null)
-    }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        val amount = dialog.dialog?.findViewById<EditText>(R.id.amount)?.text?.toString()?.toInt() ?: return
         CoroutineScope(Dispatchers.Default).launch{
-            if(api.postContribute(project.id, amount)){
+            if(api.putValidate(project.id)){
                 withContext(Dispatchers.Main){
-                    val textContrib = findViewById<TextView>(R.id.ProjectDetailContribution)
-                    textContrib.text = getString(R.string.contrib, amount + project.contribution)
-                    Toast.makeText(applicationContext, "Contribution Valider", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Project Valider", Toast.LENGTH_SHORT).show()
                 }
             }else{
                 withContext(Dispatchers.Main){
@@ -72,9 +64,5 @@ class ProjectDetailActivity: AppCompatActivity(), ContributeDialog.ContributeDia
                 }
             }
         }
-    }
-
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
-        dialog.dismiss()
     }
 }

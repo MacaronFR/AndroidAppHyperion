@@ -48,6 +48,11 @@ class API{
                             this.body = body
                         }
                     }
+                    "PUT" -> httpClient.put(url){
+                        if(body != null){
+                            this.body = body
+                        }
+                    }
                     else -> null
                 }
             }catch (e: UnresolvedAddressException){
@@ -107,6 +112,19 @@ class API{
         }
     }
 
+    suspend fun getProjectToValid(page: Int, search: String?): JSONArray{
+        var url = "/project/nologo/invalid/$page"
+        if(search != null){
+            url = "$url/search/$search"
+        }
+        val res = request(url)
+        return if((res.get("status") as JSONObject).get("code") == 200){
+            res.get("content") as JSONArray
+        }else{
+            JSONArray("[500, \"Internal Server Error\"]")
+        }
+    }
+
     suspend fun getLogo(id: Int): JSONObject{
         val res = request("/project/logo/$id")
         return if ((res.get("status") as JSONObject).get("code") == 200){
@@ -119,6 +137,11 @@ class API{
     suspend fun postContribute(project: Int, amount: Int): Boolean{
         val jsonString = "{\"amount\": $amount, \"project\": $project}"
         val res = request("/project/contribute/$token", "POST", jsonString)
+        return (res.get("status") as JSONObject).get("code") == 200
+    }
+
+    suspend fun putValidate(project: Int): Boolean{
+        val res = request("/project/valid/$token/$project", "PUT", null)
         return (res.get("status") as JSONObject).get("code") == 200
     }
 

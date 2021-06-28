@@ -14,6 +14,7 @@
     <string name="contrib">Contributions : %1$d Green coins</string>
     <string name="project_logo">Project Logo</string>
     <string name="contribute">Contribuer</string>
+    <string name="valid">Valider le projet</string>
     <string name="amount">Montant</string>
     <string name="cancel">Retour</string>
     <string name="about_desc">Nous Sommes des Chasseurs de primes qui débarquont sur Pandore afin de trouver des Arches</string>
